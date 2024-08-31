@@ -1,0 +1,97 @@
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
+class TrieNode {
+public:
+    unordered_map<char, TrieNode*> children;
+    bool is_end_of_word;
+
+    TrieNode() {
+        is_end_of_word = false;
+    }
+};
+
+class Trie {
+private:
+    TrieNode* root;
+
+    void dfs(TrieNode* node, string prefix, vector<string>& words) {
+        if (node->is_end_of_word) {
+            words.push_back(prefix);
+        }
+        for (auto it : node->children) {
+            dfs(it.second, prefix + it.first, words);
+        }
+    }
+
+public:
+    Trie() {
+        root = new TrieNode();
+    }
+
+    void insert(string word) {
+        TrieNode* node = root;
+        for (char c : word) {
+            if (node->children.find(c) == node->children.end()) {
+                node->children[c] = new TrieNode();
+            }
+            node = node->children[c];
+        }
+        node->is_end_of_word = true;
+    }
+
+    TrieNode* search_prefix(string prefix) {
+        TrieNode* node = root;
+        for (char c : prefix) {
+            if (node->children.find(c) == node->children.end()) {
+                return nullptr;
+            }
+            node = node->children[c];
+        }
+        return node;
+    }
+
+    vector<string> get_words_with_prefix(string prefix) {
+        vector<string> words;
+        TrieNode* node = search_prefix(prefix);
+        if (node != nullptr) {
+            dfs(node, prefix, words);
+        }
+        return words;
+    }
+};
+
+class AutocompleteSystem {
+private:
+    Trie trie;
+
+public:
+    AutocompleteSystem(vector<string> words) {
+        for (string word : words) {
+            trie.insert(word);
+        }
+    }
+
+    vector<string> get_suggestions(string prefix) {
+        return trie.get_words_with_prefix(prefix);
+    }
+};
+
+// Sample usage
+int main() {
+    vector<string> words = {"hello", "hell", "heaven", "heavy"};
+    AutocompleteSystem autocomplete(words);
+
+    string prefix = "he";
+    vector<string> suggestions = autocomplete.get_suggestions(prefix);
+    cout << "Suggestions for '" << prefix << "': ";
+    for (string suggestion : suggestions) {
+        cout << suggestion << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
