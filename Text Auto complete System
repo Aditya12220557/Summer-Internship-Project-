@@ -80,18 +80,49 @@ public:
     }
 };
 
-// Sample usage
 int main() {
-    vector<string> words = {"hello", "hell", "heaven", "heavy"};
+    // Diverse list of words to initialize the autocomplete system
+    vector<string> words = {
+        "apple", "application", "aptitude", "antelope", "astronaut", 
+        "banana", "bizarre", "beach", "brilliant", "butterfly",
+        "cat", "caterpillar", "cactus", "curiosity", "courage",
+        "dolphin", "dynamo", "dazzle", "driftwood", "dilemma",
+        "elephant", "ephemeral", "effervescent", "enigma", "euphoria",
+        "frog", "fascinate", "flourish", "fantastic", "flute",
+        "giraffe", "galaxy", "garnet", "glisten", "gusto",
+        "horizon", "harmony", "haiku", "hustle", "hermitage",
+        "igloo", "illusion", "impromptu", "immortal", "infinity",
+        "jungle", "jubilant", "jigsaw", "jewel", "journey",
+        "kaleidoscope", "kindred", "kismet", "kudos", "keynote"
+    };
     AutocompleteSystem autocomplete(words);
 
-    string prefix = "he";
-    vector<string> suggestions = autocomplete.get_suggestions(prefix);
-    cout << "Suggestions for '" << prefix << "': ";
-    for (string suggestion : suggestions) {
-        cout << suggestion << " ";
-    }
-    cout << endl;
+    string prefix;
+    cout << "Start typing a word (type 'exit' to quit):\n";
+    
+    while (true) {
+        cout << "\nEnter prefix: ";
+        cin >> prefix;
 
+        // Check if the user wants to exit
+        if (prefix == "exit") {
+            break;
+        }
+
+        vector<string> suggestions = autocomplete.get_suggestions(prefix);
+        
+        if (!suggestions.empty()) {
+            cout << "Suggestions for '" << prefix << "': ";
+            for (string suggestion : suggestions) {
+                cout << suggestion << " ";
+            }
+            cout << endl;
+        } else {
+            cout << "No suggestions found for '" << prefix << "'.\n";
+        }
+    }
+
+    cout << "Autocomplete system exited.\n";
     return 0;
 }
+
